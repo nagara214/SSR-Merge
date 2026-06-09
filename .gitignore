@@ -1,0 +1,14 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.eggs/
+build/
+dist/
+
+# Demo / runtime artifacts
+demo_loras/
+merged_*.safetensors
+
+# OS
+.DS_Store

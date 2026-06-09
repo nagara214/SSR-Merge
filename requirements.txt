@@ -1,0 +1,5 @@
+torch>=2.1
+safetensors>=0.4
+huggingface_hub>=0.23
+diffsynth-studio>=1.1.0
+gdown>=5.0          # only needed to fetch the demo LoRAs in demo.py
