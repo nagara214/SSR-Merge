@@ -3,7 +3,8 @@
 Usage::
 
     # Reproduce the paper's cat + dog merge on FLUX.1-dev (default).
-    # The two DreamBooth LoRAs are downloaded from Google Drive on first run.
+    # First download the two DreamBooth LoRAs from Google Drive (see README)
+    # into demo_loras/, then run:
     python demo.py
 
     # Use a different backbone with your own LoRAs:
@@ -30,6 +31,7 @@ import torch
 from ssr_merge import run
 
 # The paper's DreamBooth cat / dog LoRAs, hosted on Google Drive.
+# Download them manually and place the two .safetensors files in demo_loras/.
 GDRIVE_FOLDER = "https://drive.google.com/drive/folders/1riatiorE8WYgKGUgc8ZwARv_O37Ui_hu"
 DEMO_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), "demo_loras")
 DEFAULT_LORAS = [
@@ -42,21 +44,16 @@ DEFAULT_PROMPTS = ["a sks cat", "a sks dog"]
 _DTYPE = {"bf16": torch.bfloat16, "fp16": torch.float16, "fp32": torch.float32}
 
 
-def ensure_demo_loras() -> None:
-    """Download the cat / dog demo LoRAs from Google Drive if not present."""
-    if all(os.path.exists(p) for p in DEFAULT_LORAS):
-        return
-    try:
-        import gdown
-    except ImportError as e:
+def check_demo_loras() -> None:
+    """Make sure the cat / dog demo LoRAs have been downloaded."""
+    missing = [p for p in DEFAULT_LORAS if not os.path.exists(p)]
+    if missing:
+        names = ", ".join(os.path.basename(p) for p in DEFAULT_LORAS)
         raise SystemExit(
-            "The demo LoRAs are hosted on Google Drive; please install gdown:\n"
-            "    pip install gdown\n"
-            f"or download them manually from {GDRIVE_FOLDER} into {DEMO_DIR}/"
-        ) from e
-    os.makedirs(DEMO_DIR, exist_ok=True)
-    logging.info("Downloading demo LoRAs from Google Drive into %s ...", DEMO_DIR)
-    gdown.download_folder(GDRIVE_FOLDER, output=DEMO_DIR, quiet=False, use_cookies=False)
+            f"Demo LoRAs not found in {DEMO_DIR}/.\n"
+            f"Download {names} from\n    {GDRIVE_FOLDER}\n"
+            f"and place them in {DEMO_DIR}/ (or pass your own --loras / --prompts)."
+        )
 
 
 def _device_dtype(device: str, dtype: str) -> Tuple[str, torch.dtype]:
@@ -189,7 +186,7 @@ def main() -> None:
                 "The default cat/dog LoRAs are FLUX-only. "
                 f"Pass --loras and --prompts when using --backbone {args.backbone}."
             )
-        ensure_demo_loras()
+        check_demo_loras()
 
     output = os.path.abspath(args.output or f"merged_{args.backbone}.safetensors")
 

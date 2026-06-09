@@ -1,7 +1,5 @@
 # SSR-Merge
 
-Merge multiple LoRAs into a single LoRA, without any training.
-
 Give SSR-Merge a few LoRAs trained on the same base model and one text
 prompt per LoRA — no ground-truth images, no extra training. It runs a
 short calibration pass on one GPU and writes out a regular LoRA file you
@@ -9,6 +7,8 @@ can load like any other.
 
 > Paper: *SSR-Merge: Subspace Signal Routing for Training-Free LoRA
 > Merging in Diffusion Models* (ICML 2026).
+> Zhengxuan Wei, Yi Dong, Zonghui Li, Xianhui Lin, Xing Liu, Hong Gu,
+> Shaofeng Zhang, Wenbin Li, Qi Fan.
 
 ---
 
@@ -37,11 +37,11 @@ python demo.py --backbone qwen \
     --prompts "a photo of ..." "a photo of ..."
 ```
 
-On first run, the default command downloads the paper's cat and dog
-DreamBooth LoRAs from
+Before the default run, download the paper's cat and dog DreamBooth LoRAs
+from
 [Google Drive](https://drive.google.com/drive/folders/1riatiorE8WYgKGUgc8ZwARv_O37Ui_hu)
-(via `gdown`) into `demo_loras/`, then merges them into
-`merged_flux.safetensors`.
+and place the two `.safetensors` files in `demo_loras/`. The command then
+merges them into `merged_flux.safetensors`.
 
 `demo.py` covers five DiT-based backbones out of the box: `flux`,
 `qwen`, `z_image`, `hidream`, `flux2`. The `--loras` arguments accept
@@ -62,7 +62,7 @@ subjects faithfully in a single image:
 @inproceedings{wei2026ssrmerge,
   title={SSR-Merge: Subspace Signal Routing for Training-Free LoRA Merging in Diffusion Models},
   author={Wei, Zhengxuan and Dong, Yi and Li, Zonghui and Lin, Xianhui and Liu, Xing and Gu, Hong and Zhang, Shaofeng and Li, Wenbin and Fan, Qi},
-  booktitle={Proceedings of the International Conference on Machine Learning (ICML)},
+  booktitle={ICML},
   year={2026},
 }
 ```
